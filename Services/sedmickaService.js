@@ -1,0 +1,4 @@
+app.service('sedmickaService', function () {
+    
+
+});

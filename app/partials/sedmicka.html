@@ -1,0 +1,14 @@
+<div class="body">
+	<div class="container">{{'ROUND '+trackRounds}}
+		<div ng-repeat="player in players">
+			{{player.name}}
+			<div ng-repeat="points in player.points track by $index">
+				<h3>{{points}}</h3>
+			</div>
+			{{'TOTAL SCORE' + player.totalScore}}
+			<form ng-submit="score(input[$index], player)">
+				<input ng-model="input[$index]" type="number">
+			</form>{{input}} {{AtotalScore}}
+		</div>
+	</div>
+</div>
