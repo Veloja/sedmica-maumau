@@ -1,14 +1,17 @@
 <div class="body">
-	<div class="container">{{'ROUND '+trackRounds}}
-		<div ng-repeat="player in players">
-			{{player.name}}
-			<div ng-repeat="points in player.points track by $index">
-				<h3>{{points}}</h3>
+	<div class="container">{{'Rounds ' + trackRounds +' '}}{{'PLAYER '+ trackPlayer }}
+		<div class="row">
+			<div class="col-12">
+				<div ng-repeat="player in players">{{player}}
+					<h3 ng-class="{'selected': player.selected}">{{player.name}}</h3>
+					<h3>{{"HANDS: " + player.points}}</h3>
+					<form ng-submit="submit(input, player)">{{input}}
+						<input ng-model="input" type="number">
+					</form>
+					{{'TOTAL SCORE: '+ player.totalScore}}
+					{{'HANDS'+ player.hands}}
+				</div>
 			</div>
-			{{'TOTAL SCORE' + player.totalScore}}
-			<form ng-submit="score(input[$index], player)">
-				<input ng-model="input[$index]" type="number">
-			</form>{{input}} {{AtotalScore}}
 		</div>
 	</div>
 </div>
