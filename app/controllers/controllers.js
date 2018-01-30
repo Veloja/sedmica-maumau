@@ -2,57 +2,39 @@ app.controller('SedmickaController', function ($scope) {
 
 	$scope.players = [
 		{
-			id: 1,
-			totalScore: 0,
-			selected: false,
 			name: 'Veloja',
-			points: [],
-			hands: 0,
 		},
 		{
-			id: 2,
-			totalScore: 0,
-			selected: false,
-			name: 'Proda',
-			points: [],
-			hands: 0,
-		},
-		{
-			id: 3,
-			totalScore: 0,
-			selected: false,
 			name: 'Gile',
-			points: [],
-			hands: 0,
+		},
+		{
+			name: 'Marija',
+		},
+		{
+			name: 'Ivca',
 		}
 	];
 
-	$scope.trackHands = 0;
-	$scope.trackRounds = 0;
-	$scope.players[$scope.trackRounds].selected = true;
-	$scope.trackPlayer = 0;
-	$scope.gameOver = false;
-	$scope.input = null;
+	$scope.currentHandScores = { player1: null, player2: null, player3: null, player4: null };
+	$scope.totalScores = { player1: 0, player2: 0, player3: 0, player4: 0 };
 
-	$scope.submit = function (input, player) {
-		for (var i = 0; i < $scope.players.length; i++) {
-			if (player === $scope.players[i]) {
-				$scope.players[i].points.push(input);
-				$scope.players[i].hands++;
-				totalScoreForPlayer(input, player);
-			} 
-		}
+	$scope.playersScores = [];
+
+	$scope.submitCurrentHand = function () {
+		var score = angular.copy($scope.currentHandScores);
+		$scope.playersScores.push(score);
+		increaseTotalScores();
+		resetScores();
 	}
 
+	function increaseTotalScores() {
+		$scope.totalScores.player1 += $scope.currentHandScores.player1;
+		$scope.totalScores.player2 += $scope.currentHandScores.player2;
+		$scope.totalScores.player3 += $scope.currentHandScores.player3;
+		$scope.totalScores.player4 += $scope.currentHandScores.player4;
+	}
 
-		// radi za nest ng-repeat
-		function totalScoreForPlayer(input, player) {
-			var totalScore = input;
-			for (var i = 0; i < $scope.players.length; i++) {
-				if (player === $scope.players[i]) {
-					$scope.players[i].totalScore += totalScore;
-				}
-			}
-		}
-
-	});
+	function resetScores() {
+		$scope.currentHandScores = { player1: null, player2: null, player3: null, player4: null };
+	}
+});

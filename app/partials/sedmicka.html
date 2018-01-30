@@ -1,16 +1,55 @@
 <div class="body">
-	<div class="container">{{'Rounds ' + trackRounds +' '}}{{'PLAYER '+ trackPlayer }}
+	<div class="container">
 		<div class="row">
 			<div class="col-12">
-				<div ng-repeat="player in players">{{player}}
-					<h3 ng-class="{'selected': player.selected}">{{player.name}}</h3>
-					<h3>{{"HANDS: " + player.points}}</h3>
-					<form ng-submit="submit(input, player)">{{input}}
-						<input ng-model="input" type="number">
-					</form>
-					{{'TOTAL SCORE: '+ player.totalScore}}
-					{{'HANDS'+ player.hands}}
-				</div>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th ng-class="{'selected': ((playersScores.length % players.length) === $index)}" ng-repeat="player in players">{{player.name}}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="score in playersScores track by $index">
+							<td>{{score.player1}}</td>
+							<td>{{score.player2}}</td>
+							<td>{{score.player3}}</td>
+							<td>{{score.player4}}</td>
+						</tr>
+						<tr>
+							<td>
+								<form>
+									<input type="number" ng-model="currentHandScores.player1">
+								</form>
+							</td>
+							<td>
+								<form>
+									<input type="number" ng-model="currentHandScores.player2">
+								</form>
+							</td>
+							<td>
+								<form>
+									<input type="number" ng-model="currentHandScores.player3">
+								</form>
+							</td>
+							<td>
+								<form>
+									<input type="number" ng-model="currentHandScores.player4">
+								</form>
+							</td>
+							<td>
+								<form>
+									<button class="btn btn-primary" ng-click="submitCurrentHand()"> => </button>
+								</form>
+							</td>
+						</tr>
+						<tr>
+							<td>{{totalScores.player1}}</td>
+							<td>{{totalScores.player2}}</td>
+							<td>{{totalScores.player3}}</td>
+							<td>{{totalScores.player4}}</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
