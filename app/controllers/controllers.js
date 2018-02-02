@@ -1,23 +1,20 @@
 app.controller('SedmickaController', function ($scope) {
 
-	$scope.players = [
-		{
-			name: 'Veloja',
-		},
-		{
-			name: 'Gile',
-		},
-		{
-			name: 'Marija',
-		},
-		{
-			name: 'Ivca',
-		}
-	];
+	$scope.players = [];
 
-	$scope.currentHandScores = { player1: null, player2: null, player3: null, player4: null };
-	$scope.totalScores = { player1: 0, player2: 0, player3: 0, player4: 0 };
+	$scope.newPlayer = {name: ''};
 
+	$scope.addPlayer = function(player){
+		$scope.players.push(player);
+		$scope.newPlayer = {name: ''};
+		$scope.currentHandScores['player' + $scope.players.length] = 0;
+		$scope.totalScores['player' + $scope.players.length] = 0;
+	}
+
+	$scope.currentHandScores = {};
+
+	$scope.totalScores = {};
+// niz u koji guramo objekat tj rezultate iz trenutne ruke i sluzi da pratimo ko deli
 	$scope.playersScores = [];
 
 	$scope.submitCurrentHand = function () {
@@ -28,13 +25,14 @@ app.controller('SedmickaController', function ($scope) {
 	}
 
 	function increaseTotalScores() {
-		$scope.totalScores.player1 += $scope.currentHandScores.player1;
-		$scope.totalScores.player2 += $scope.currentHandScores.player2;
-		$scope.totalScores.player3 += $scope.currentHandScores.player3;
-		$scope.totalScores.player4 += $scope.currentHandScores.player4;
+		for(var i = 1; i <= $scope.players.length; i++){
+			$scope.totalScores['player' + i] += $scope.currentHandScores['player' + i];
+		}
 	}
 
 	function resetScores() {
-		$scope.currentHandScores = { player1: null, player2: null, player3: null, player4: null };
+		for (player in $scope.currentHandScores){
+			$scope.currentHandScores[player] = 0;
+		} 
 	}
 });

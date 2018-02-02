@@ -4,37 +4,31 @@
 			<div class="col-12">
 				<table class="table table-striped">
 					<thead>
+						<!-- ADD NEW PLAYER -->
+						<form>
+							<input type="text" ng-model="newPlayer.name">
+							<button class="btn btn-primary" ng-click="addPlayer(newPlayer)"> => </button>
+						</form>
+						<!-- PLAYERS NAMES -->
 						<tr>
-							<th ng-class="{'selected': ((playersScores.length % players.length) === $index)}" ng-repeat="player in players">{{player.name}}</th>
+							<th ng-class="{'selected': ((playersScores.length % players.length) === $index)}" ng-repeat="player in players track by $index">
+								{{player.name}}
+							</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="score in playersScores track by $index">
-							<td>{{score.player1}}</td>
-							<td>{{score.player2}}</td>
-							<td>{{score.player3}}</td>
-							<td>{{score.player4}}</td>
+						<!-- POENI IZ SVAKE RUKE -->
+						<tr>
+							<td ng-repeat="(key, value) in currentHandScores track by $index">
+								{{'CHS '+currentHandScores[key]}}
+							</td>
+						</tr>
+						<tr ng-repeat="score in playersScores">
+							<td ng-repeat="(key, value) in score">{{score[key]}}</td>
 						</tr>
 						<tr>
-							<td>
-								<form>
-									<input type="number" ng-model="currentHandScores.player1">
-								</form>
-							</td>
-							<td>
-								<form>
-									<input type="number" ng-model="currentHandScores.player2">
-								</form>
-							</td>
-							<td>
-								<form>
-									<input type="number" ng-model="currentHandScores.player3">
-								</form>
-							</td>
-							<td>
-								<form>
-									<input type="number" ng-model="currentHandScores.player4">
-								</form>
+							<td ng-repeat="(key, value) in currentHandScores">
+								<input type="number" ng-model="currentHandScores[key]" />
 							</td>
 							<td>
 								<form>
@@ -43,10 +37,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td>{{totalScores.player1}}</td>
-							<td>{{totalScores.player2}}</td>
-							<td>{{totalScores.player3}}</td>
-							<td>{{totalScores.player4}}</td>
+							<td ng-repeat="(key, value) in totalScores track by $index">{{'TOTAL SC: ' + totalScores[key]}}</td>
 						</tr>
 					</tbody>
 				</table>
