@@ -1,38 +1,162 @@
 app.controller('SedmickaController', function ($scope) {
 
 	$scope.players = [];
+	$scope.newPlayer = { name: '' };
 
-	$scope.newPlayer = {name: ''};
-
-	$scope.addPlayer = function(player){
+	$scope.addPlayer = function (player) {
 		$scope.players.push(player);
-		$scope.newPlayer = {name: ''};
-		$scope.currentHandScores['player' + $scope.players.length] = 0;
-		$scope.totalScores['player' + $scope.players.length] = 0;
+		$scope.newPlayer = { name: '' };
+		$scope.currentHandScores['player' + $scope.players.length] = null;
+		$scope.totalScores['player' + $scope.players.length] = null;
+		aritmetickaSredina();
 	}
-
+	// scores form each round
 	$scope.currentHandScores = {};
-
+	// track most wins for each player
+	// keep track of total scores
 	$scope.totalScores = {};
-// niz u koji guramo objekat tj rezultate iz trenutne ruke i sluzi da pratimo ko deli
+	// arr in which we push obj => curr hand scores; track which player's turn to split and to follow statistics
 	$scope.playersScores = [];
 
 	$scope.submitCurrentHand = function () {
 		var score = angular.copy($scope.currentHandScores);
 		$scope.playersScores.push(score);
 		increaseTotalScores();
+		mostWins();
 		resetScores();
 	}
 
+	// set score that when reached, game over
+	$scope.addEndScore = null;
+	$scope.setEndScore = function (input) {
+		$scope.addEndScore = input;
+	}
+
+	$scope.deletePlayer = function (deleted) {
+		// nalazimo na kom je indexu u players nizu player koga hocemo da brisemo
+		// to mi treba jer index od toga i plus jedan mi nalazi playera u playersScores nizu
+		var where = $scope.players.indexOf(deleted) + 1;
+		for (var j = 0; j < $scope.playersScores.length; j++) {
+			for (var property in $scope.playersScores[j]) {
+				// delete all properties from deleted player
+				delete $scope.playersScores[j]['player' + where];
+			}
+		}
+		// delete name, currentHS & totalScores
+		$scope.players.splice($scope.players.indexOf(deleted), 1);
+		delete $scope.totalScores['player' + where];
+		delete $scope.currentHandScores['player' + where];
+	}
+
 	function increaseTotalScores() {
-		for(var i = 1; i <= $scope.players.length; i++){
+		for (var i = 1; i <= $scope.players.length; i++) {
 			$scope.totalScores['player' + i] += $scope.currentHandScores['player' + i];
+			returnOnNumber();
+			// checkIfGameOver();
+		}
+	}
+
+	function checkIfGameOver() {
+		for (var i = 1; i < $scope.players.length; i++) {
+			if ($scope.totalScores['player' + i] >= $scope.addEndScore) {
+				alert('END GAME');
+			}
+		}
+	}
+	// track players with most wins
+	function mostWins() {
+		var temporary = {};
+
+		$scope.players.forEach(function(player, index){
+			temporary['player' + (index + 1)] = 0;
+		});
+
+		for (var i = 0; i < $scope.playersScores.length; i++) {
+			for (var prop in $scope.playersScores[i]) {
+				var toStrMinus = $scope.playersScores[i][prop].toString();
+				var minus = '-';
+				if(toStrMinus[0] === minus){
+					var numStr = Number(toStrMinus);
+					temporary[prop]+=1;
+				} 
+			}
+		}
+		// temporary => arr{name:'', wins:''}
+		var sortable = [];
+		for(var property in temporary){
+			sortable.push({name: property, wins: temporary[property]});
+		}
+		//sort array;
+		sortable.sort(function(a, b){
+			return a.wins - b.wins;
+		});
+		//player with most wins on $scope
+		$scope.mostWins = sortable[sortable.length - 1];
+		var best = $scope.mostWins.name.split('');
+		var bestIdx = best[best.length - 1];
+		// player with most wins have a name
+		$scope.bestPl = $scope.players[bestIdx-1].name;
+		//first place
+		var sortableFirst = [];
+		for(var total in $scope.totalScores){
+			sortableFirst.push({name: total, wins: $scope.totalScores[total]});
+		}
+		//sort array;
+		sortableFirst.sort(function(a, b){
+			return a.wins - b.wins;
+		});
+		//first Ranked player on $scope
+		$scope.firstPlayer = sortableFirst[0];
+		var first = $scope.firstPlayer.name.split('');
+		var firstIdx = first[first.length - 1];
+		// first player have a name
+		$scope.firstPl = $scope.players[firstIdx-1].name;
+		// Loser
+		$scope.loser = sortableFirst[sortableFirst.length - 1];
+		var worst = $scope.loser.name.split('');
+		var worstIdx = worst[worst.length - 1];
+		// last player have a name
+		$scope.worstPl = $scope.players[worstIdx - 1].name;
+	}
+
+	function aritmetickaSredina() {
+		if ($scope.playersScores.length > 0) {
+			var total = 0;
+			for (var i = 1; i <= $scope.players.length; i++) {
+				total += $scope.totalScores['player' + i];
+			}
+			var aritmetickaSredina = total / ($scope.players.length - 1);
+			$scope.totalScores['player' + $scope.players.length] = Math.round(aritmetickaSredina);
+			setToDNPplayerFromAritmetickaSredina();
+		}
+	}
+	// set all undefined to have a property and some value to fix bootstrap cells
+	function setToDNPplayerFromAritmetickaSredina() {
+		for (var j = 0; j < $scope.playersScores.length; j++) {
+			if ($scope.playersScores[j]['player' + $scope.players.length] === undefined) {
+				$scope.playersScores[j]['player' + $scope.players.length] = 'DNP';
+				undefined = $scope.playersScores[j]['player' + $scope.players.length];
+			}
+		}
+	}
+	// check if 111 or 222.... then return back on 1 or 2...
+	function returnOnNumber() {
+		for (var i = 1; i <= $scope.players.length; i++) {
+			if ($scope.totalScores['player' + i] > 100) {
+				var numStr = $scope.totalScores['player' + i].toString();
+				if (numStr[0] === numStr[1] && numStr[1] === numStr[2]) {
+					numStr = Number(numStr[0]);
+					$scope.totalScores['player' + i] = numStr;
+					alert('BRAVOOOO VRACAS SE NA ' + numStr + '!!!');
+				}
+			}
 		}
 	}
 
 	function resetScores() {
-		for (player in $scope.currentHandScores){
-			$scope.currentHandScores[player] = 0;
-		} 
+		for (player in $scope.currentHandScores) {
+			$scope.currentHandScores[player] = null;
+		}
 	}
+
 });

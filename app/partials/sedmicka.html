@@ -2,43 +2,63 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-12">
-				<table class="table table-striped">
-					<thead>
+				<table class="table table-striped table-bordered">
+					<thead class="thead-inverse">
 						<!-- ADD NEW PLAYER -->
 						<form>
-							<input type="text" ng-model="newPlayer.name">
+							<input type="text" placeholder="Add new player" ng-model="newPlayer.name">
 							<button class="btn btn-primary" ng-click="addPlayer(newPlayer)"> => </button>
+						</form>
+						<!-- SET GAME OVER SCORE-->
+						<form>
+							<label for="endScore"></label>
+							<input id="endScore" placeholder="Set end score" type="number" ng-model="addEndScore">
+							<button class="btn btn-primary" ng-click="setEndScore(addEndScore)"> => </button>
 						</form>
 						<!-- PLAYERS NAMES -->
 						<tr>
-							<th ng-class="{'selected': ((playersScores.length % players.length) === $index)}" ng-repeat="player in players track by $index">
+							<th>rounds</th>
+							<th ng-repeat="player in players track by $index" ng-class="{'selected': ((playersScores.length % players.length) === $index)}">
 								{{player.name}}
+								<button ng-click="deletePlayer(player)" class="btn btn-primary btn-small">delete</button>
 							</th>
 						</tr>
 					</thead>
 					<tbody>
 						<!-- POENI IZ SVAKE RUKE -->
-						<tr>
-							<td ng-repeat="(key, value) in currentHandScores track by $index">
-								{{'CHS '+currentHandScores[key]}}
-							</td>
-						</tr>
 						<tr ng-repeat="score in playersScores">
+							<td>{{$index+1}}</td>
 							<td ng-repeat="(key, value) in score">{{score[key]}}</td>
 						</tr>
 						<tr>
+							<td></td>
 							<td ng-repeat="(key, value) in currentHandScores">
-								<input type="number" ng-model="currentHandScores[key]" />
+								<form>
+									<label for="currHandScore"></label>
+									<input id="currHandScore" type="number" ng-model="currentHandScores[key]"/>
+								</form>
 							</td>
 							<td>
-								<form>
-									<button class="btn btn-primary" ng-click="submitCurrentHand()"> => </button>
-								</form>
+								<button class="btn btn-primary" ng-click="submitCurrentHand()"> => </button>
 							</td>
 						</tr>
 						<tr>
-							<td ng-repeat="(key, value) in totalScores track by $index">{{'TOTAL SC: ' + totalScores[key]}}</td>
+							<td>total</td>
+							<td ng-repeat="(key, value) in totalScores track by $index">{{totalScores[key]}}</td>
 						</tr>
+					</tbody>
+				</table>
+				<!-- STATISTIKA -->
+				<table class="table table-striped">
+					<thead>
+						<th>First</th>
+						<th>Most wins</th>
+						<th>Loser</th>
+					</thead>
+					<tbody>
+						<td>{{firstPl}}{{" " + firstPlayer.wins }}</td>
+						<td>{{bestPl}}{{" " + mostWins.wins}}</td>
+						<td>{{worstPl}}{{" "+ loser.wins}}</td>
 					</tbody>
 				</table>
 			</div>
