@@ -12,7 +12,6 @@ app.controller('SedmickaController', function ($scope) {
 	}
 	// scores form each round
 	$scope.currentHandScores = {};
-	// track most wins for each player
 	// keep track of total scores
 	$scope.totalScores = {};
 	// arr in which we push obj => curr hand scores; track which player's turn to split and to follow statistics
@@ -21,13 +20,12 @@ app.controller('SedmickaController', function ($scope) {
 	$scope.submitCurrentHand = function () {
 		var score = angular.copy($scope.currentHandScores);
 		$scope.playersScores.push(score);
-		increaseTotalScores();
+		calculateTotalScores();
 		mostWins();
 		resetScores();
 	}
-
 	// set score that when reached, game over
-	$scope.addEndScore = null;
+	$scope.addEndScore = 1000;
 	$scope.setEndScore = function (input) {
 		$scope.addEndScore = input;
 	}
@@ -48,12 +46,20 @@ app.controller('SedmickaController', function ($scope) {
 		delete $scope.currentHandScores['player' + where];
 	}
 
-	function increaseTotalScores() {
-		for (var i = 1; i <= $scope.players.length; i++) {
-			$scope.totalScores['player' + i] += $scope.currentHandScores['player' + i];
-			returnOnNumber();
-			// checkIfGameOver();
+	function calculateTotalScores() {
+		//reset to 0
+		for(var prop in $scope.totalScores){
+			$scope.totalScores[prop] = 0;
 		}
+
+		$scope.playersScores.forEach(function(playerScore, index){
+			for(var prop in playerScore){
+				$scope.totalScores[prop] += playerScore[prop];
+			}
+		});
+		mostWins();
+		returnOnNumber();
+		checkIfGameOver();
 	}
 
 	function checkIfGameOver() {
@@ -63,11 +69,27 @@ app.controller('SedmickaController', function ($scope) {
 			}
 		}
 	}
+	// Editing scores if someoen made mistake
+	$scope.editMode = [];
+	$scope.edit = function (index) {
+		// score is changed object from playersScores
+		$scope.editMode[index] = true;
+		$scope.inputScore = score;
+	}
+	$scope.inputScore = {};
+	$scope.save = function (index) {
+		// debugger;
+		var idxRow = $scope.playersScores.indexOf($scope.inputScore);
+		$scope.playersScores[idxRow] = $scope.inputScore;
+		console.log($scope.playersScores);
+		calculateTotalScores();
+		$scope.editMode[index] = false;
+	}
+	// Statistics for most wins
 	// track players with most wins
 	function mostWins() {
 		var temporary = {};
-
-		$scope.players.forEach(function(player, index){
+		$scope.players.forEach(function (player, index) {
 			temporary['player' + (index + 1)] = 0;
 		});
 
@@ -75,19 +97,19 @@ app.controller('SedmickaController', function ($scope) {
 			for (var prop in $scope.playersScores[i]) {
 				var toStrMinus = $scope.playersScores[i][prop].toString();
 				var minus = '-';
-				if(toStrMinus[0] === minus){
+				if (toStrMinus[0] === minus) {
 					var numStr = Number(toStrMinus);
-					temporary[prop]+=1;
-				} 
+					temporary[prop] += 1;
+				}
 			}
 		}
 		// temporary => arr{name:'', wins:''}
 		var sortable = [];
-		for(var property in temporary){
-			sortable.push({name: property, wins: temporary[property]});
+		for (var property in temporary) {
+			sortable.push({ name: property, wins: temporary[property] });
 		}
 		//sort array;
-		sortable.sort(function(a, b){
+		sortable.sort(function (a, b) {
 			return a.wins - b.wins;
 		});
 		//player with most wins on $scope
@@ -95,22 +117,26 @@ app.controller('SedmickaController', function ($scope) {
 		var best = $scope.mostWins.name.split('');
 		var bestIdx = best[best.length - 1];
 		// player with most wins have a name
-		$scope.bestPl = $scope.players[bestIdx-1].name;
+		$scope.bestPl = $scope.players[bestIdx - 1].name;
+		sortThem();
+	}
+	// Statistics for first and last player
+	function sortThem() {
 		//first place
 		var sortableFirst = [];
-		for(var total in $scope.totalScores){
-			sortableFirst.push({name: total, wins: $scope.totalScores[total]});
+		for (var total in $scope.totalScores) {
+			sortableFirst.push({ name: total, wins: $scope.totalScores[total] });
 		}
 		//sort array;
-		sortableFirst.sort(function(a, b){
+		sortableFirst.sort(function (a, b) {
 			return a.wins - b.wins;
 		});
-		//first Ranked player on $scope
+		//first Ranked player on $scope and have a name player1,2,3
 		$scope.firstPlayer = sortableFirst[0];
 		var first = $scope.firstPlayer.name.split('');
 		var firstIdx = first[first.length - 1];
-		// first player have a name
-		$scope.firstPl = $scope.players[firstIdx-1].name;
+		// first player should have a real name
+		$scope.firstPl = $scope.players[firstIdx - 1].name;
 		// Loser
 		$scope.loser = sortableFirst[sortableFirst.length - 1];
 		var worst = $scope.loser.name.split('');
