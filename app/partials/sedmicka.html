@@ -1,72 +1,95 @@
 <div class="body">
 	<div class="container">
+		<!-- ADD NEW PLAYER -->
+		<form data-toggle="validator" role="form">
+			<div class="form-inline row">
+				<div class="form-group col-sm-6">
+					<label for="player" class="control-label">Add new player </label>
+					<input ng-model="newPlayer.name" type="text" class="form-control" id="player" placeholder="Add player" required>
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary btn-block" ng-click="addPlayer(newPlayer)">
+							<i class="fas fa-user-plus"></i>
+						</button>
+					</div>
+				</div>
+				<div class="form-group col-sm-6">
+					<label for="score" class="control-label">Set max score </label>
+					<input ng-model="addEndScore" type="number" class="form-control" id="score" placeholder="Set max score" required>
+					<button type="submit" class="btn btn-primary" ng-click="setEndScore(addEndScore)">
+						<i class="fas fa-cogs"></i>
+					</button>
+				</div>
+			</div>
+		</form>
 		<div class="row">
 			<div class="col-12">
-				<table class="table table-striped table-bordered">
+				<table ng-show="showTable" class="table table-condensed table-hover table-fixed">
 					<thead>
-						<!-- ADD NEW PLAYER -->
-						<form>
-							<input type="text" placeholder="Add new player" ng-model="newPlayer.name">
-							<button class="btn btn-primary" ng-click="addPlayer(newPlayer)"> => </button>
-						</form>
-						<!-- SET GAME OVER SCORE-->
-						<form>
-							<label for="endScore"></label>
-							<input id="endScore" placeholder="Set end score" type="number" ng-model="addEndScore">
-							<button class="btn btn-primary" ng-click="setEndScore(addEndScore)"> => </button>
-						</form>
 						<!-- PLAYERS NAMES -->
-						<tr>
-							<th>#</th>
-							<th ng-repeat="player in players track by $index" ng-class="{'selected': ((playersScores.length % players.length) === $index)}">
+						<tr class="success text-center">
+							<th class="col-1">#</th>
+							<th class="col-10" ng-repeat="player in players track by $index" ng-class="{'selected': ((playersScores.length % players.length) === $index)}">
 								{{player.name}}
-								<button ng-click="deletePlayer(player)" class="btn btn-primary btn-small">delete</button>
+								<button ng-click="deletePlayer(player)" class="btn btn-primary btn-sm">
+									<i class="far fa-trash-alt"></i>
+								</button>
 							</th>
+							<th class="col-1" ></th>
 						</tr>
 					</thead>
 					<tbody>
 						<!-- POENI IZ SVAKE RUKE -->
-						<tr ng-repeat="score in playersScores track by $index">
-							<td>{{$index+1}}</td>
-							<td ng-repeat="(key, value) in score track by $index">
+						<tr class="text-center" ng-repeat="score in playersScores track by $index">
+							<td class="col-1">{{$index+1}}</td>
+							<td class="col-10" ng-repeat="(key, value) in score track by $index">
 								<span ng-hide="editMode[$parent.$index]">{{score[key]}}</span>
-								<input ng-show="editMode[$parent.$index]" ng-model="score[key]" type="number">
+								<!-- <div class="form-group"> -->
+								<label for="chs" class="control-label"></label>
+								<input type="number" id="chs" class="form-control" ng-show="editMode[$parent.$index]" ng-model="score[key]" placeholder="Enter your score"
+								 required>
+								<!-- </div> -->
 							</td>
-							<td>
-								<button ng-hide="editMode[$index]" ng-click="edit($index)" class="btn btn-primary btn-small">edit</button>
-								<button ng-show="editMode[$index]" ng-click="save($index)" class="btn btn-primary btn-small" type="number">save</button>
-							</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td ng-repeat="(key, value) in currentHandScores track by $index">
-								<form>
-									<label for="currHandScore"></label>
-									<input id="currHandScore" type="number" ng-model="currentHandScores[key]" />
-								</form>
-							</td>
-							<td>
-								<button class="btn btn-primary" ng-click="submitCurrentHand()"> => </button>
+							<td class="col-1">
+								<button ng-hide="editMode[$index]" ng-click="edit($index)" class="btn btn-outline-warning btn-sm">
+									<i class="far fa-edit"></i>
+								</button>
+								<button ng-show="editMode[$index]" ng-click="save($index)" class="btn btn-outline-success btn-sm" type="number">
+									<i class="far fa-save"></i>
+								</button>
 							</td>
 						</tr>
 						<tr>
-							<td>Total</td>
-							<td ng-repeat="(key, value) in totalScores track by $index">{{totalScores[key]}}</td>
+							<td class="col-1"></td>
+							<td class="col-10" ng-repeat="(key, value) in currentHandScores track by $index">
+								<label for="currHandScore"></label>
+								<input type="number" id="currHandScore" class="form-control" type="number" ng-model="currentHandScores[key]" required/>
+							</td>
+							<td class="col-1" >
+								<button class="btn btn-primary" ng-click="submitCurrentHand()">
+									<i class="far fa-plus-square"></i>
+								</button>
+							</td>
 						</tr>
+						<tr>
+							<td class="col-1">Total</td>
+							<td class="col-10" ng-repeat="(key, value) in totalScores track by $index">{{totalScores[key]}}</td>
+							<td class="col-1"></td>
+						</tr>
+
 					</tbody>
 				</table>
 				<!-- STATISTIKA -->
-				<table class="table table-striped">
+				<table ng-show="showTable" class="table table-striped">
 					<thead>
 						<th>First</th>
 						<th>Most wins</th>
 						<th>Loser</th>
 					</thead>
-					<tbody>
+					<thead>
 						<td>{{firstPl}}{{" " + firstPlayer.wins }}</td>
 						<td>{{bestPl}}{{" " + mostWins.wins}}</td>
 						<td>{{worstPl}}{{" "+ loser.wins}}</td>
-					</tbody>
+					</thead>
 				</table>
 			</div>
 		</div>

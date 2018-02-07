@@ -1,16 +1,69 @@
-html {
-    height: 100%;
-}
-body {
+img.bg {
+    /* Set rules to fill background */
     min-height: 100%;
-    background-image: 
-        linear-gradient(
-            to right,
-            rgb(96, 151, 155) 15%,
-            rgb(52, 121, 133) 40%,
-            rgb(134, 73, 134) 85%
-        )
+    min-width: 1024px;
+      
+    /* Set up proportionate scaling */
+    width: 100%;
+    height: auto;
+      
+    /* Set up positioning */
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+  
+  @media screen and (max-width: 1024px) { /* Specific to this particular image */
+    img.bg {
+      left: 50%;
+      margin-left: -512px;   /* 50% */
+    }
+  }
+body {
+    background: url('./images/bg.jpeg') no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    font-family: 'Signika', sans-serif;
+    color: white;
 }
 .selected {
-    background-color: green;
+    background-color: rgb(95, 133, 95);
+    border-radius: 15px;
 }
+
+#label{
+    margin-left: 400px;
+    margin-right: 10px;
+}
+.padding {
+    margin-top: 20px;
+}
+.row {
+    margin-top: 20px;
+}
+
+
+tbody {
+    display:block;
+    height:400px;
+    overflow:auto;
+}
+thead, tbody tr {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+}
+thead {
+    width: calc( 100% - 1em );
+}
+.btn {
+    float: right;
+}
+tr {
+    vertical-align: middle;
+}
+
+
+

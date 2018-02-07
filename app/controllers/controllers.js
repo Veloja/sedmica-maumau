@@ -4,12 +4,23 @@ app.controller('SedmickaController', function ($scope) {
 	$scope.newPlayer = { name: '' };
 
 	$scope.addPlayer = function (player) {
+		if(checkForms(player.name)){
+			return;
+		} 
+
 		$scope.players.push(player);
 		$scope.newPlayer = { name: '' };
 		$scope.currentHandScores['player' + $scope.players.length] = null;
 		$scope.totalScores['player' + $scope.players.length] = null;
 		aritmetickaSredina();
+		if($scope.playersScores){
+			$scope.showTable = true;
+		} else {
+			$scope.showTable = false;
+		}
 	}
+	// hide table when there aren't players
+	$scope.showTable = false;
 	// scores form each round
 	$scope.currentHandScores = {};
 	// keep track of total scores
@@ -17,7 +28,7 @@ app.controller('SedmickaController', function ($scope) {
 	// arr in which we push obj => curr hand scores; track which player's turn to split and to follow statistics
 	$scope.playersScores = [];
 
-	$scope.submitCurrentHand = function () {
+	$scope.submitCurrentHand = function (index) {
 		var score = angular.copy($scope.currentHandScores);
 		$scope.playersScores.push(score);
 		calculateTotalScores();
@@ -184,5 +195,14 @@ app.controller('SedmickaController', function ($scope) {
 			$scope.currentHandScores[player] = null;
 		}
 	}
+
+	function checkForms(name) {
+		if(!name){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 
 });
