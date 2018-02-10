@@ -1,19 +1,19 @@
 app.controller('SedmickaController', function ($scope) {
-
 	$scope.players = [];
 	$scope.newPlayer = { name: '' };
 
 	$scope.addPlayer = function (player) {
-		if(checkForms(player.name)){
+		if (checkForms(player.name)) {
 			return;
-		} 
+		}
 
 		$scope.players.push(player);
 		$scope.newPlayer = { name: '' };
 		$scope.currentHandScores['player' + $scope.players.length] = null;
 		$scope.totalScores['player' + $scope.players.length] = null;
+		$scope.correct['player' + $scope.players.length] = null;
 		aritmetickaSredina();
-		if($scope.playersScores){
+		if ($scope.playersScores) {
 			$scope.showTable = true;
 		} else {
 			$scope.showTable = false;
@@ -25,6 +25,8 @@ app.controller('SedmickaController', function ($scope) {
 	$scope.currentHandScores = {};
 	// keep track of total scores
 	$scope.totalScores = {};
+	// object for correcting bug
+	$scope.correct = {};
 	// arr in which we push obj => curr hand scores; track which player's turn to split and to follow statistics
 	$scope.playersScores = [];
 
@@ -59,15 +61,18 @@ app.controller('SedmickaController', function ($scope) {
 
 	function calculateTotalScores() {
 		//reset to 0
-		for(var prop in $scope.totalScores){
+		for (var prop in $scope.totalScores) {
 			$scope.totalScores[prop] = 0;
 		}
 
-		$scope.playersScores.forEach(function(playerScore, index){
-			for(var prop in playerScore){
+		$scope.playersScores.forEach(function (playerScore, index) {
+			for (var prop in playerScore) {
 				$scope.totalScores[prop] += playerScore[prop];
 			}
 		});
+		for(var prop in $scope.correct){
+			$scope.totalScores[prop] += $scope.correct[prop];
+		}
 		mostWins();
 		returnOnNumber();
 		checkIfGameOver();
@@ -89,10 +94,8 @@ app.controller('SedmickaController', function ($scope) {
 	}
 	$scope.inputScore = {};
 	$scope.save = function (index) {
-		// debugger;
 		var idxRow = $scope.playersScores.indexOf($scope.inputScore);
 		$scope.playersScores[idxRow] = $scope.inputScore;
-		console.log($scope.playersScores);
 		calculateTotalScores();
 		$scope.editMode[index] = false;
 	}
@@ -182,10 +185,13 @@ app.controller('SedmickaController', function ($scope) {
 			if ($scope.totalScores['player' + i] > 100) {
 				var numStr = $scope.totalScores['player' + i].toString();
 				if (numStr[0] === numStr[1] && numStr[1] === numStr[2]) {
+					var problem = Number(numStr);
 					numStr = Number(numStr[0]);
 					$scope.totalScores['player' + i] = numStr;
+					// $scope.playersScores[$scope.playersScores.length - 1]['player' + i] -= (problem - numStr);
+					$scope.correct['player' + i] -= (problem - numStr);
 					alert('BRAVOOOO VRACAS SE NA ' + numStr + '!!!');
-				}
+				} 
 			}
 		}
 	}
@@ -197,12 +203,11 @@ app.controller('SedmickaController', function ($scope) {
 	}
 
 	function checkForms(name) {
-		if(!name){
+		if (!name) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-
 
 });
