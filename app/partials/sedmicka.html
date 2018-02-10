@@ -43,11 +43,9 @@
 							<td class="col-1">{{$index+1}}</td>
 							<td class="col-10" ng-repeat="(key, value) in score track by $index">
 								<span ng-hide="editMode[$parent.$index]">{{score[key]}}</span>
-								<!-- <div class="form-group"> -->
 								<label for="chs" class="control-label"></label>
 								<input type="number" id="chs" class="form-control" ng-show="editMode[$parent.$index]" ng-model="score[key]" placeholder="Enter your score"
 								 required>
-								<!-- </div> -->
 							</td>
 							<td class="col-1">
 								<button ng-hide="editMode[$index]" ng-click="edit($index)" class="btn btn-outline-warning btn-sm">

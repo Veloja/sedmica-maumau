@@ -79,7 +79,7 @@ app.controller('SedmickaController', function ($scope) {
 	}
 
 	function checkIfGameOver() {
-		for (var i = 1; i <= $scope.players.length; i++) {
+		for (var i = 1; i <= $scope.totalScores.length; i++) {
 			if ($scope.totalScores['player' + i] >= $scope.addEndScore) {
 				alert('END GAME');
 			}
@@ -165,17 +165,17 @@ app.controller('SedmickaController', function ($scope) {
 			for (var i = 1; i <= $scope.players.length; i++) {
 				total += $scope.totalScores['player' + i];
 			}
-			var aritmetickaSredina = total / ($scope.players.length - 1);
+			var aritmetickaSredina = total / ($scope.players.length);
 			$scope.totalScores['player' + $scope.players.length] = Math.round(aritmetickaSredina);
 			setToDNPplayerFromAritmetickaSredina();
 		}
 	}
 	// set all undefined to have a property and some value to fix bootstrap cells
 	function setToDNPplayerFromAritmetickaSredina() {
+		debugger;
 		for (var j = 0; j < $scope.playersScores.length; j++) {
 			if ($scope.playersScores[j]['player' + $scope.players.length] === undefined) {
-				$scope.playersScores[j]['player' + $scope.players.length] = 'DNP';
-				undefined = $scope.playersScores[j]['player' + $scope.players.length];
+				$scope.playersScores[j]['player' + $scope.players.length] = 0;
 			}
 		}
 	}
