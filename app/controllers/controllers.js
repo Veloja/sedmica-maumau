@@ -79,7 +79,7 @@ app.controller('SedmickaController', function ($scope) {
 	}
 
 	function checkIfGameOver() {
-		for (var i = 1; i < $scope.players.length; i++) {
+		for (var i = 1; i <= $scope.players.length; i++) {
 			if ($scope.totalScores['player' + i] >= $scope.addEndScore) {
 				alert('END GAME');
 			}
