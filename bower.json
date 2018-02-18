@@ -1,0 +1,24 @@
+{
+  "name": "Sedmicka",
+  "homepage": "https://github.com/Veloja/sedmica-maumau",
+  "authors": [
+    "Vladan <vladanvelojic@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap4": "^4.0.0",
+    "angular": "^1.6.9",
+    "angular-route": "^1.6.9",
+    "jQuery": "^3.3.1",
+    "fontawesome": "^5.0.6"
+  }
+}
